@@ -36,8 +36,6 @@ jobs:
   index-with-google:
     needs: build-and-deploy
     runs-on: ubuntu-latest
-    # Only runs when the GCP secret is set
-    if: ${{ secrets.GCP_SERVICE_ACCOUNT_JSON != '' }}
     env:
       GCP_SA: ${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}
     steps:
