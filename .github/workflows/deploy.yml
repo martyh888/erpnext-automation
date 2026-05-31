@@ -1,8 +1,13 @@
-name: Build and Deploy to Cloudflare Pages
+name: Build and Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   build-and-deploy:
@@ -23,18 +28,17 @@ jobs:
       - name: Build Eleventy
         run: npm run build
 
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: erpnext-automation
-          directory: _site
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
+          publish_branch: gh-pages
 
   index-with-google:
     needs: build-and-deploy
     runs-on: ubuntu-latest
+    if: ${{ secrets.GCP_SERVICE_ACCOUNT_JSON != '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -44,18 +48,17 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Write GCP service account key
-        run: echo '${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}' > gcp-service-account.json
-
       - name: Install google-indexing-script
         run: npm install -g google-indexing-script
 
-      - name: Run Google Indexing
+      - name: Write GCP service account key
         run: |
-          google-indexing-script https://erpnext-automation.pages.dev/
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ./gcp-service-account.json
+          mkdir -p ~/.gis
+          echo '${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}' > ~/.gis/service_account.json
+
+      - name: Run Google Indexing
+        run: google-indexing-script https://martyh888.github.io/erpnext-automation/
 
       - name: Cleanup key
         if: always()
-        run: rm -f gcp-service-account.json
+        run: rm -f ~/.gis/service_account.json
