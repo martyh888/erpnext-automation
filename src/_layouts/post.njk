@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }} | ERPNext Automation</title>
+  <meta name="description" content="{{ description }}">
+  <meta property="og:title" content="{{ title }}">
+  <meta property="og:description" content="{{ description }}">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://erpnext-automation.pages.dev{{ permalink }}">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #1a1a1a;
+      background: #fff;
+      margin: 0;
+      line-height: 1.7;
+    }
+    .container { max-width: 780px; margin: 0 auto; padding: 2rem 1.5rem; }
+    header { border-bottom: 1px solid #eee; padding-bottom: 1rem; margin-bottom: 2rem; }
+    header a { text-decoration: none; color: #0070f3; font-weight: 700; font-size: 1.1rem; }
+    h1 { font-size: 2rem; line-height: 1.3; margin-bottom: 0.5rem; }
+    .meta { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+    .tags span {
+      display: inline-block;
+      background: #f0f0f0;
+      border-radius: 3px;
+      padding: 2px 8px;
+      font-size: 0.8rem;
+      margin-right: 4px;
+      color: #555;
+    }
+    pre {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 1.2rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+    code { font-family: "JetBrains Mono", "Fira Code", monospace; }
+    p code {
+      background: #f4f4f4;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+    h2 { font-size: 1.4rem; margin-top: 2.5rem; border-bottom: 1px solid #eee; padding-bottom: 0.4rem; }
+    h3 { font-size: 1.15rem; margin-top: 1.8rem; color: #333; }
+    hr { border: none; border-top: 1px solid #eee; margin: 2rem 0; }
+    footer { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid #eee; color: #888; font-size: 0.85rem; }
+    a { color: #0070f3; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a href="/">ERPNext Automation</a>
+    </header>
+    <main>
+      <h1>{{ title }}</h1>
+      <div class="meta">
+        <span>{{ date | dateFormat }}</span> &middot;
+        <span>{{ author }}</span>
+        {% if tags %}
+        <div class="tags" style="margin-top:0.5rem">
+          {% for tag in tags %}<span>{{ tag }}</span>{% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {{ content | safe }}
+    </main>
+    <footer>
+      &copy; {{ date | dateFormat }} &middot; ERPNext Automation
+    </footer>
+  </div>
+</body>
+</html>
