@@ -6,8 +6,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   build-and-deploy:
@@ -38,10 +36,17 @@ jobs:
   index-with-google:
     needs: build-and-deploy
     runs-on: ubuntu-latest
+    # Only runs when the GCP secret is set
     if: ${{ secrets.GCP_SERVICE_ACCOUNT_JSON != '' }}
+    env:
+      GCP_SA: ${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Check secret present
+        run: |
+          if [ -z "$GCP_SA" ]; then
+            echo "GCP_SERVICE_ACCOUNT_JSON not set — skipping indexing"
+            exit 0
+          fi
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -54,7 +59,7 @@ jobs:
       - name: Write GCP service account key
         run: |
           mkdir -p ~/.gis
-          echo '${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}' > ~/.gis/service_account.json
+          echo "$GCP_SA" > ~/.gis/service_account.json
 
       - name: Run Google Indexing
         run: google-indexing-script https://martyh888.github.io/erpnext-automation/
